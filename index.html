@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>test — testtokendurov</title>
+<meta name="description" content="testtokendurov — the shiniest experiment on the internet. A Y2K chrome playground for the test token." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,300..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..500;1,8..60,300..500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --pink:#ff7ad1;
+    --pink-soft:#ffc0e6;
+    --pink-deep:#f24bb6;
+    --cobalt:#1436e6;
+    --cobalt-deep:#0a1f9e;
+    --white:#ffffff;
+    --ink:#0b1050;
+    --chrome-a:#fdfdff;
+    --chrome-b:#c7d0ff;
+    --chrome-c:#8fa0ff;
+    --radius:28px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }
+  body{
+    font-family:"Source Serif 4", Georgia, serif;
+    font-weight:400;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 800px at 85% -10%, rgba(20,54,230,.28), transparent 60%),
+      radial-gradient(900px 700px at -10% 30%, rgba(255,122,209,.5), transparent 60%),
+      radial-gradient(1000px 900px at 60% 110%, rgba(242,75,182,.35), transparent 55%),
+      linear-gradient(180deg,#ffd9ef 0%, #ffc9e9 30%, #d9e0ff 70%, #ffd3ec 100%);
+    background-attachment:fixed;
+    overflow-x:hidden;
+    line-height:1.6;
+  }
+  /* ---- patterned backdrop: Y2K dot grid + starbursts ---- */
+  body::before{
+    content:"";
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      radial-gradient(rgba(20,54,230,.14) 1.5px, transparent 1.6px),
+      radial-gradient(rgba(255,255,255,.5) 1px, transparent 1.2px);
+    background-size:34px 34px, 34px 34px;
+    background-position:0 0, 17px 17px;
+  }
+  .display{
+    font-family:"Bricolage Grotesque", system-ui, sans-serif;
+    font-weight:800;
+    line-height:1.02;
+    letter-spacing:-.02em;
+  }
+  a{color:var(--cobalt)}
+  ::selection{background:var(--cobalt);color:#fff}
+
+  /* ---------- chrome text ---------- */
+  .chrome-text{
+    background:linear-gradient(180deg,#ffffff 0%,#eef2ff 28%,#94a6ff 46%,#1436e6 52%,#7e92ff 60%,#ffffff 82%,#c9d3ff 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    filter:drop-shadow(0 2px 0 rgba(255,255,255,.9)) drop-shadow(0 6px 18px rgba(20,54,230,.35));
+  }
+  .pink-chrome-text{
+    background:linear-gradient(180deg,#fff 0%,#ffe3f4 30%,#ff8ed8 48%,#f24bb6 54%,#ff9edc 64%,#fff 88%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    filter:drop-shadow(0 2px 0 rgba(255,255,255,.9)) drop-shadow(0 6px 18px rgba(242,75,182,.4));
+  }
+
+  /* ---------- lens flares ---------- */
+  .flare{
+    position:absolute;border-radius:50%;pointer-events:none;z-index:1;
+    background:radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,255,255,.35) 25%, transparent 60%);
+    mix-blend-mode:screen;
+    animation:flarePulse 6s ease-in-out infinite;
+  }
+  .flare::after{
+    content:"";position:absolute;top:50%;left:50%;width:220%;height:3px;
+    transform:translate(-50%,-50%);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);
+  }
+  .flare::before{
+    content:"";position:absolute;top:50%;left:50%;width:3px;height:220%;
+    transform:translate(-50%,-50%);
+    background:linear-gradient(180deg,transparent,rgba(255,255,255,.8),transparent);
+  }
+  @keyframes flarePulse{
+    0%,100%{opacity:.7;transform:scale(1)}
+    50%{opacity:1;transform:scale(1.15)}
+  }
+
+  /* ---------- glossy Y2K button ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:.6em;
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:1.05rem;
+    padding:.95em 1.9em;border-radius:999px;border:0;cursor:pointer;
+    text-decoration:none;position:relative;overflow:hidden;
+    color:#fff;
+    background:linear-gradient(180deg,#5f79ff 0%, var(--cobalt) 45%, var(--cobalt-deep) 100%);
+    box-shadow:
+      inset 0 2px 2px rgba(255,255,255,.7),
+      inset 0 -6px 12px rgba(0,0,20,.35),
+      0 10px 24px rgba(20,54,230,.45),
+      0 2px 0 rgba(255,255,255,.6);
+    transition:transform .18s cubic-bezier(.2,1.4,.4,1), box-shadow .18s ease;
+  }
+  .btn::before{ /* top gloss highlight */
+    content:"";position:absolute;left:6%;right:6%;top:7%;height:42%;
+    border-radius:999px;
+    background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.05));
+    pointer-events:none;
+  }
+  .btn:hover{transform:translateY(-3px) scale(1.03)}
+  .btn:active{transform:translateY(1px) scale(.98)}
+  .btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+  .btn.pink{
+    background:linear-gradient(180deg,#ff9ede 0%, var(--pink-deep) 45%, #b91f83 100%);
+    box-shadow:
+      inset 0 2px 2px rgba(255,255,255,.75),
+      inset 0 -6px 12px rgba(60,0,40,.35),
+      0 10px 24px rgba(242,75,182,.5),
+      0 2px 0 rgba(255,255,255,.6);
+  }
+  .btn.ghost{
+    color:var(--cobalt-deep);
+    background:linear-gradient(180deg,#ffffff 0%, #e8ecff 55%, #cdd6ff 100%);
+    box-shadow:
+      inset 0 2px 2px rgba(255,255,255,.95),
+      inset 0 -5px 10px rgba(20,54,230,.2),
+      0 10px 24px rgba(20,54,230,.25),
+      0 2px 0 rgba(255,255,255,.8);
+  }
+
+  /* ---------- glass panel ---------- */
+  .glass{
+    background:linear-gradient(150deg, rgba(255,255,255,.55), rgba(255,255,255,.22));
+    backdrop-filter:blur(18px) saturate(1.4);
+    -webkit-backdrop-filter:blur(18px) saturate(1.4);
+    border:1.5px solid rgba(255,255,255,.75);
+    border-radius:var(--radius);
+    box-shadow:0 18px 50px rgba(20,54,230,.18), inset 0 1px 0 rgba(255,255,255,.9);
+    position:relative;
+  }
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+  section{position:relative;z-index:2}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky;top:14px;z-index:50;margin:14px auto 0;max-width:1120px;padding:0 24px;
+  }
+  .nav-inner{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:.65rem 1.2rem;border-radius:999px;
+  }
+  .logo{
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.3rem;
+    text-decoration:none;letter-spacing:-.02em;display:flex;align-items:center;gap:.45em;
+  }
+  .logo .orb{
+    width:26px;height:26px;border-radius:50%;flex:none;
+    background:radial-gradient(circle at 30% 28%, #fff 0%, #ffd0ec 22%, var(--pink-deep) 55%, var(--cobalt) 100%);
+    box-shadow:inset 0 -3px 6px rgba(0,0,60,.4), inset 0 2px 3px rgba(255,255,255,.9), 0 4px 10px rgba(242,75,182,.5);
+  }
+  .nav-links{display:flex;gap:1.4rem;list-style:none;align-items:center}
+  .nav-links a{
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:.95rem;
+    text-decoration:none;color:var(--ink);opacity:.85;transition:opacity .2s;
+  }
+  .nav-links a:hover{opacity:1;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--pink-deep)}
+  @media(max-width:720px){.nav-links li.hide-m{display:none}}
+
+  /* ---------- hero ---------- */
+  header.hero{
+    min-height:88vh;display:flex;align-items:center;position:relative;z-index:2;
+    padding:70px 0 90px;
+  }
+  .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center}
+  @media(max-width:900px){.hero-grid{grid-template-columns:1fr}}
+  .kicker{
+    display:inline-flex;align-items:center;gap:.5em;
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:.85rem;
+    text-transform:uppercase;letter-spacing:.18em;
+    color:var(--cobalt-deep);
+    padding:.5em 1.1em;border-radius:999px;margin-bottom:1.4rem;
+    background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.5));
+    border:1.5px solid rgba(255,255,255,.9);
+    box-shadow:0 6px 16px rgba(20,54,230,.15);
+  }
+  .kicker .dot{width:9px;height:9px;border-radius:50%;background:var(--pink-deep);box-shadow:0 0 10px var(--pink-deep);animation:flarePulse 2.4s infinite}
+  h1{
+    font-size:clamp(3rem, 9vw, 6.4rem);
+    margin-bottom:1.2rem;
+  }
+  h1 .stretch{font-stretch:75%;font-weight:300;display:block;font-size:.5em;letter-spacing:.04em;margin-bottom:.15em}
+  .hero p.lede{
+    font-size:clamp(1.05rem,2vw,1.3rem);max-width:34em;font-style:italic;
+    color:#3a2a56;margin-bottom:2.2rem;
+  }
+  .hero-cta{display:flex;gap:1rem;flex-wrap:wrap}
+
+  /* hero orb sculpture */
+  .orb-stage{position:relative;height:420px;display:flex;align-items:center;justify-content:center}
+  @media(max-width:900px){.orb-stage{height:320px}}
+  .big-orb{
+    width:min(320px,70vw);aspect-ratio:1;border-radius:50%;position:relative;
+    background:
+      radial-gradient(circle at 32% 26%, #ffffff 0%, #ffe1f3 14%, #ff8ed8 38%, var(--pink-deep) 58%, var(--cobalt) 88%, var(--cobalt-deep) 100%);
+    box-shadow:
+      inset 0 -22px 46px rgba(6,14,90,.55),
+      inset 0 14px 26px rgba(255,255,255,.85),
+      0 34px 80px rgba(242,75,182,.45),
+      0 10px 30px rgba(20,54,230,.4);
+    animation:orbFloat 7s ease-in-out infinite;
+  }
+  .big-orb::before{ /* specular */
+    content:"";position:absolute;top:9%;left:16%;width:38%;height:24%;
+    border-radius:50%;transform:rotate(-18deg);
+    background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,0));
+  }
+  .big-orb .ring{
+    position:absolute;inset:-14%;border-radius:50%;
+    border:2px dashed rgba(255,255,255,.7);
+    animation:spin 24s linear infinite;
+  }
+  .big-orb .ring.two{inset:-26%;border-style:dotted;animation-duration:40s;animation-direction:reverse}
+  .orbit-chip{
+    position:absolute;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:.8rem;
+    padding:.45em 1em;border-radius:999px;white-space:nowrap;
+    background:linear-gradient(180deg,#fff,#dfe6ff);color:var(--cobalt-deep);
+    border:1.5px solid #fff;
+    box-shadow:0 8px 20px rgba(20,54,230,.3), inset 0 1px 0 #fff;
+    animation:orbFloat 5s ease-in-out infinite;
+  }
+  .orbit-chip.c1{top:6%;left:2%;animation-delay:-1s}
+  .orbit-chip.c2{bottom:12%;right:0;animation-delay:-2.5s;background:linear-gradient(180deg,#fff,#ffd4ed);color:#a11670}
+  .orbit-chip.c3{top:42%;right:-4%;animation-delay:-4s}
+  @keyframes orbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ---------- marquee bands ---------- */
+  .marquee{
+    position:relative;z-index:3;overflow:hidden;white-space:nowrap;
+    padding:.85rem 0;
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:800;
+    font-size:clamp(1.1rem,2.6vw,1.7rem);letter-spacing:.02em;
+    transform:rotate(-1.2deg) scale(1.02);
+    border-top:2px solid rgba(255,255,255,.85);
+    border-bottom:2px solid rgba(255,255,255,.85);
+    margin:8px 0;
+  }
+  .marquee.blue{background:linear-gradient(180deg,#3d5bff, var(--cobalt) 50%, var(--cobalt-deep));color:#fff;box-shadow:0 14px 40px rgba(20,54,230,.35)}
+  .marquee.pink{background:linear-gradient(180deg,#ff9ede, var(--pink-deep) 50%, #c2258c);color:#fff;transform:rotate(1.2deg) scale(1.02);box-shadow:0 14px 40px rgba(242,75,182,.35)}
+  .marquee.white{background:linear-gradient(180deg,#fff, #e9edff 60%, #d5dcff);color:var(--cobalt-deep)}
+  .marquee-track{display:inline-block;animation:scroll 26s linear infinite}
+  .marquee.pink .marquee-track{animation-duration:32s;animation-direction:reverse}
+  .marquee span{margin:0 1.6rem;display:inline-block}
+  .marquee .star{color:rgba(255,255,255,.85);text-shadow:0 0 12px #fff}
+  .marquee.white .star{color:var(--pink-deep);text-shadow:0 0 12px var(--pink-soft)}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ---------- sections ---------- */
+  .section-pad{padding:110px 0}
+  h2{
+    font-size:clamp(2.1rem,5.4vw,3.6rem);margin-bottom:.6em;
+  }
+  h2 .thin{font-stretch:78%;font-weight:300}
+  .section-intro{max-width:44em;font-size:1.12rem;font-style:italic;color:#3a2a56;margin-bottom:3rem}
+
+  /* about split */
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  @media(max-width:820px){.about-grid{grid-template-columns:1fr}}
+  .about-card{padding:2.2rem 2rem}
+  .about-card h3{
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.35rem;
+    margin-bottom:.6em;display:flex;align-items:center;gap:.5em;
+  }
+  .badge-num{
+    width:2em;height:2em;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+    font-size:.8em;color:#fff;flex:none;
+    background:linear-gradient(180deg,#5f79ff,var(--cobalt-deep));
+    box-shadow:inset 0 2px 2px rgba(255,255,255,.7), inset 0 -4px 8px rgba(0,0,30,.4), 0 6px 14px rgba(20,54,230,.4);
+  }
+  .about-card:nth-child(2) .badge-num,
+  .about-card:nth-child(3) .badge-num{background:linear-gradient(180deg,#ff9ede,#b91f83);box-shadow:inset 0 2px 2px rgba(255,255,255,.75), inset 0 -4px 8px rgba(60,0,40,.4), 0 6px 14px rgba(242,75,182,.45)}
+  .about-card p{color:#33254f}
+
+  /* stats band */
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:480px){.stats-grid{grid-template-columns:1fr}}
+  .stat{padding:1.8rem 1.4rem;text-align:center}
+  .stat .num{
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:800;
+    font-size:clamp(2rem,4.4vw,2.9rem);display:block;line-height:1;
+  }
+  .stat .lbl{font-style:italic;font-size:.95rem;color:#4a3a66;margin-top:.5em;display:block}
+
+  /* timeline */
+  .timeline{list-style:none;position:relative;padding-left:0;display:grid;gap:22px}
+  .timeline li{padding:1.7rem 1.8rem;display:grid;grid-template-columns:auto 1fr;gap:1.2rem;align-items:start}
+  .phase-tag{
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:.8rem;
+    text-transform:uppercase;letter-spacing:.14em;color:#fff;
+    padding:.55em 1em;border-radius:999px;white-space:nowrap;margin-top:.2em;
+    background:linear-gradient(180deg,#5f79ff,var(--cobalt-deep));
+    box-shadow:inset 0 2px 2px rgba(255,255,255,.6), inset 0 -4px 8px rgba(0,0,30,.4), 0 6px 14px rgba(20,54,230,.35);
+  }
+  .timeline li:nth-child(even) .phase-tag{background:linear-gradient(180deg,#ff9ede,#b91f83);box-shadow:inset 0 2px 2px rgba(255,255,255,.7), inset 0 -4px 8px rgba(60,0,40,.4), 0 6px 14px rgba(242,75,182,.4)}
+  .timeline h3{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.25rem;margin-bottom:.35em}
+  .timeline p{color:#33254f}
+  @media(max-width:600px){.timeline li{grid-template-columns:1fr}}
+
+  /* FAQ */
+  details{
+    border-radius:20px;margin-bottom:14px;overflow:hidden;
+  }
+  details summary{
+    cursor:pointer;list-style:none;padding:1.25rem 1.6rem;
+    font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:1.1rem;
+    display:flex;justify-content:space-between;align-items:center;gap:1rem;
+  }
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{
+    content:"+";font-size:1.5rem;line-height:1;flex:none;
+    width:1.5em;height:1.5em;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+    color:#fff;background:linear-gradient(180deg,#ff9ede,#b91f83);
+    box-shadow:inset 0 2px 2px rgba(255,255,255,.7), inset 0 -3px 6px rgba(60,0,40,.4);
+    transition:transform .25s;
+  }
+  details[open] summary::after{transform:rotate(45deg)}
+  details .faq-body{padding:0 1.6rem 1.4rem;color:#33254f;max-width:56em}
+
+  /* final CTA */
+  .final-cta{text-align:center;padding:3.6rem 2rem}
+  .final-cta h2{margin-bottom:.4em}
+  .final-cta p{font-style:italic;max-width:36em;margin:0 auto 2rem;color:#3a2a56}
+
+  footer{
+    position:relative;z-index:2;text-align:center;padding:3rem 24px 4rem;
+    font-size:.95rem;color:#4a3a66;font-style:italic;
+  }
+  footer .display{font-style:normal;font-size:1.05rem;margin-bottom:.4em}
+
+  /* reveal on scroll */
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease, transform .7s cubic-bezier(.2,.9,.3,1)}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- lens flares -->
+<div class="flare" style="top:8%;left:12%;width:180px;height:180px" aria-hidden="true"></div>
+<div class="flare" style="top:36%;right:6%;width:260px;height:260px;animation-delay:-2s" aria-hidden="true"></div>
+<div class="flare" style="top:72%;left:4%;width:200px;height:200px;animation-delay:-4s" aria-hidden="true"></div>
+
+<nav aria-label="Main">
+  <div class="nav-inner glass">
+    <a class="logo display" href="#top"><span class="orb" aria-hidden="true"></span>test</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li class="hide-m"><a href="#numbers">Numbers</a></li>
+      <li class="hide-m"><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="kicker"><span class="dot" aria-hidden="true"></span> testtokendurov · est. right now</span>
+      <h1 class="display">
+        <span class="stretch chrome-text">this is only a</span>
+        <span class="pink-chrome-text">test</span>
+      </h1>
+      <p class="lede">testtokendurov is the token that never pretended to be anything else. No promises of the moon — just a gloriously chrome-plated experiment in seeing what happens when you press the shiny button.</p>
+      <div class="hero-cta">
+        <a class="btn pink" href="#about">Press the shiny button</a>
+        <a class="btn ghost" href="#roadmap">Read the plan (there is one)</a>
+      </div>
+    </div>
+    <div class="orb-stage" aria-hidden="true">
+      <div class="big-orb">
+        <div class="ring"></div>
+        <div class="ring two"></div>
+      </div>
+      <span class="orbit-chip c1">100% test</span>
+      <span class="orbit-chip c2">0% pretense</span>
+      <span class="orbit-chip c3">∞ gloss</span>
+    </div>
+  </div>
+</header>
+
+<!-- marquee band 1 -->
+<div class="marquee blue" aria-hidden="true">
+  <div class="marquee-track">
+    <span>testtokendurov</span><span class="star">✦</span><span>this is a test</span><span class="star">✦</span><span>and the test is passing</span><span class="star">✦</span><span>chrome never sleeps</span><span class="star">✦</span><span>testtokendurov</span><span class="star">✦</span><span>this is a test</span><span class="star">✦</span><span>and the test is passing</span><span class="star">✦</span><span>chrome never sleeps</span><span class="star">✦</span>
+  </div>
+</div>
+
+<section class="section-pad" id="about">
+  <div class="wrap">
+    <h2 class="display reveal"><span class="thin chrome-text">what exactly is</span> <span class="pink-chrome-text">testtokendurov?</span></h2>
+    <p class="section-intro reveal">Every launch on the internet starts the same way: somebody types the word “test” and hits enter. testtokendurov takes that sacred first keystroke and gives it a body, a name, and an unreasonable amount of gloss.</p>
+    <div class="about-grid">
+      <div class="glass about-card reveal">
+        <h3 class="display"><span class="badge-num">1</span> Born as a test</h3>
+        <p>Most tokens claim a grand origin story. Ours is honest: it began as a test, it is still a test, and it will remain a test until further notice. That transparency is the whole brand — refreshingly free of whitepaper fiction.</p>
+      </div>
+      <div class="glass about-card reveal">
+        <h3 class="display"><span class="badge-num">2</span> The durov suffix</h3>
+        <p>The name nods to the culture of shipping first and polishing later — a tribute to messengers, to minimalism, and to anyone who ever launched something with a single word and a shrug. We took the shrug and added chrome.</p>
+      </div>
+      <div class="glass about-card reveal">
+        <h3 class="display"><span class="badge-num">3</span> Maximum gloss</h3>
+        <p>If we're going to be a test, we're going to be the shiniest one. Bubblegum pink, cobalt blue, lens flares on demand. Every pixel of this experiment is buffed until you can see your reflection in it.</p>
+      </div>
+      <div class="glass about-card reveal">
+        <h3 class="display"><span class="badge-num">4</span> Zero pretense</h3>
+        <p>No fake partnerships. No “audited by our cousin.” No countdown timers to nothing. testtokendurov promises exactly one thing: to keep existing as a beautifully over-designed placeholder for the joy of testing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- marquee band 2 -->
+<div class="marquee pink" aria-hidden="true">
+  <div class="marquee-track">
+    <span>gloss · flare · repeat</span><span class="star">✦</span><span>bubblegum &amp; cobalt</span><span class="star">✦</span><span>press the shiny button</span><span class="star">✦</span><span>y2k forever</span><span class="star">✦</span><span>gloss · flare · repeat</span><span class="star">✦</span><span>bubblegum &amp; cobalt</span><span class="star">✦</span><span>press the shiny button</span><span class="star">✦</span><span>y2k forever</span><span class="star">✦</span>
+  </div>
+</div>
+
+<section class="section-pad" id="numbers">
+  <div class="wrap">
+    <h2 class="display reveal"><span class="chrome-text">test results,</span> <span class="thin pink-chrome-text">live</span></h2>
+    <p class="section-intro reveal">Numbers so honest they hurt. Counted, verified, and lovingly buffed to a mirror finish.</p>
+    <div class="stats-grid">
+      <div class="glass stat reveal"><span class="num pink-chrome-text" data-count="1">0</span><span class="lbl">token concept, singular</span></div>
+      <div class="glass stat reveal"><span class="num chrome-text" data-count="100" data-suffix="%">0</span><span class="lbl">certified test, no filler</span></div>
+      <div class="glass stat reveal"><span class="num pink-chrome-text" data-count="0">0</span><span class="lbl">empty promises made</span></div>
+      <div class="glass stat reveal"><span class="num chrome-text" data-count="2000" data-suffix="s">0</span><span class="lbl">the era we never left</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- marquee band 3 -->
+<div class="marquee white" aria-hidden="true">
+  <div class="marquee-track">
+    <span>phase one: exist</span><span class="star">✦</span><span>phase two: shine</span><span class="star">✦</span><span>phase three: keep testing</span><span class="star">✦</span><span>never a phase four</span><span class="star">✦</span><span>phase one: exist</span><span class="star">✦</span><span>phase two: shine</span><span class="star">✦</span><span>phase three: keep testing</span><span class="star">✦</span><span>never a phase four</span><span class="star">✦</span>
+  </div>
+</div>
+
+<section class="section-pad" id="roadmap">
+  <div class="wrap">
+    <h2 class="display reveal"><span class="thin chrome-text">the roadmap</span> <span class="pink-chrome-text">(a real one)</span></h2>
+    <p class="section-intro reveal">Other roadmaps promise exchanges, metaverses, and yachts. Ours promises only what a test can deliver — and delivers it in full.</p>
+    <ul class="timeline">
+      <li class="glass reveal">
+        <span class="phase-tag">Phase 01</span>
+        <div>
+          <h3>Exist</h3>
+          <p>Somebody typed “testtokendurov.” It compiled. It rendered. In the world of tests, this is already a triumph worthy of a lens flare — so we added several.</p>
+        </div>
+      </li>
+      <li class="glass reveal">
+        <span class="phase-tag">Phase 02</span>
+        <div>
+          <h3>Shine</h3>
+          <p>Deploy the chrome. Bubble type, glossy buttons, glass panels floating over a dotted backdrop. If the test must run, it will run looking like the year 2000 imagined the future.</p>
+        </div>
+      </li>
+      <li class="glass reveal">
+        <span class="phase-tag">Phase 03</span>
+        <div>
+          <h3>Keep testing</h3>
+          <p>A test that ends is just a product. testtokendurov stays in perpetual beta — permanently glossy, permanently honest, permanently one keystroke away from becoming something more. Or not. That's the fun part.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- marquee band 4 -->
+<div class="marquee blue" aria-hidden="true">
+  <div class="marquee-track">
+    <span>frequently asked questions</span><span class="star">✦</span><span>rarely serious answers</span><span class="star">✦</span><span>always shiny</span><span class="star">✦</span><span>testtokendurov</span><span class="star">✦</span><span>frequently asked questions</span><span class="star">✦</span><span>rarely serious answers</span><span class="star">✦</span><span>always shiny</span><span class="star">✦</span><span>testtokendurov</span><span class="star">✦</span>
+  </div>
+</div>
+
+<section class="section-pad" id="faq">
+  <div class="wrap">
+    <h2 class="display reveal"><span class="chrome-text">questions</span> <span class="thin pink-chrome-text">&amp; gloss</span></h2>
+    <details class="glass reveal">
+      <summary>Is testtokendurov a real token?</summary>
+      <div class="faq-body">It is a real test. Whether a test is real is a philosophical question we answer with lens flares. What we can confirm: this page exists, the chrome is genuine, and the honesty is 100% organic.</div>
+    </details>
+    <details class="glass reveal">
+      <summary>Why the name “durov”?</summary>
+      <div class="faq-body">It's a tip of the hat to the art of launching things quietly and letting them speak for themselves. One word, no press release, maximum intrigue. We simply added bubblegum pink.</div>
+    </details>
+    <details class="glass reveal">
+      <summary>What can I actually do here?</summary>
+      <div class="faq-body">Scroll. Admire. Press the shiny button (it's very pressable). Watch the marquees loop forever. In a web full of overpromising landing pages, doing nothing — beautifully — is the feature.</div>
+    </details>
+    <details class="glass reveal">
+      <summary>When does the test end?</summary>
+      <div class="faq-body">Never, ideally. The moment a test ends, someone expects results. We prefer the eternal shimmer of possibility — see Phase 03 of the roadmap, which is also our retirement plan.</div>
+    </details>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="wrap">
+    <div class="glass final-cta reveal">
+      <h2 class="display"><span class="pink-chrome-text">still reading?</span> <span class="thin chrome-text">the test likes you.</span></h2>
+      <p>You've reached the bottom of the shiniest test on the internet. There's nothing to buy, nothing to connect, and nothing to regret. Just one more button — and yes, it's glossy.</p>
+      <a class="btn" href="#top">Run the test again ↺</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="display chrome-text">test · testtokendurov</div>
+  <p>Buffed to a mirror finish in the eternal year 2000. This is only a test. It always was.</p>
+</footer>
+
+<script>
+  // reveal on scroll
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // animated counters
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const counters = document.querySelectorAll('[data-count]');
+  const cio = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      const el = e.target, target = +el.dataset.count, suffix = el.dataset.suffix||'';
+      cio.unobserve(el);
+      if(prefersReduced || target===0){ el.textContent = target + suffix; return; }
+      const dur = 1400, t0 = performance.now();
+      (function tick(t){
+        const p = Math.min((t-t0)/dur,1), eased = 1-Math.pow(1-p,3);
+        el.textContent = Math.round(target*eased) + suffix;
+        if(p<1) requestAnimationFrame(tick);
+      })(t0);
+    });
+  },{threshold:.6});
+  counters.forEach(el=>cio.observe(el));
+
+  // gentle parallax on the hero orb (pointer only, no reduced motion)
+  if(!prefersReduced && matchMedia('(pointer:fine)').matches){
+    const orb = document.querySelector('.big-orb');
+    const stage = document.querySelector('.orb-stage');
+    if(orb && stage){
+      stage.addEventListener('pointermove', e=>{
+        const r = stage.getBoundingClientRect();
+        const x = (e.clientX - r.left)/r.width - .5;
+        const y = (e.clientY - r.top)/r.height - .5;
+        orb.style.transform = `translate(${x*14}px, ${y*14}px)`;
+      });
+      stage.addEventListener('pointerleave', ()=>{ orb.style.transform=''; });
+    }
+  }
+</script>
+</body>
+</html>
